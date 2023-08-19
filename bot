@@ -1,0 +1,84 @@
+import discord
+from discord.ext import commands
+
+from random import randint
+
+bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
+loser = 0
+winner = 0
+pet = {
+    'health': 100,
+    'strength': 1,
+    'defence': 1,
+}
+
+@bot.command('train')
+async def train(ctx):
+    pet['strength'] += 2
+    pet['health'] -= 1
+    await ctx.send('ваш питомец усердно тренировался')
+    await ctx.send(str(pet))
+@bot.command('new')
+async def new(ctx):
+    loser = 0
+    winner = 0
+    pet = {
+        'health': 100,
+        'strength': 1,
+        'defence': 1,
+    }
+    await ctx.send('вот данные нового питомца')
+    await ctx.send(str(pet))
+    await ctx.send('количесво побед: ' + str(winner))
+    await ctx.send('количесво поражений: ' + str(loser))
+@bot.command('feed')
+async def feed(ctx):
+    pet['health'] += 20
+    await ctx.send('ваш питомец покушал')
+    await ctx.send(str(pet))
+@bot.command('help1')
+async def help1(ctx):
+    await ctx.send('список команд:')
+    await ctx.send('/help1 - посмотреть список команд')
+    await ctx.send('/new -  сбросить данные')
+    await ctx.send('/look - посмотреть данные')
+    await ctx.send('/train - тренировать питомца')
+    await ctx.send('/feed - кормить питомца')
+    await ctx.send('/dress - одеть питомца')
+    await ctx.send('/fight - отправить питомца в бой')
+@bot.command('look')
+async def look(ctx):
+    await ctx.send('вот данные вашего питомца')
+    await ctx.send(str(pet))
+    await ctx.send('количесво побед: ' + str(winner))
+    await ctx.send('количесво поражений: ' + str(loser))
+@bot.command('dress')
+async def dress(ctx):
+    pet['defence'] += 2
+    await ctx.send('ваш питомец надел прочную одежду')
+    await ctx.send(str(pet))
+@bot.command('fight')
+async def fight(ctx):
+    global winner
+    global loser
+    end = 1
+    enemy = {
+        'health': randint(1, 100),
+        'strength': randint(1, 10),
+        'defence': randint(1, 10),
+        }
+    await ctx.send('вы атакуете врага')
+    while pet['health'] >= 0 and enemy['health'] >= 0 and end == 1:
+        pet['health'] -= enemy['strength'] - pet['defence']
+        enemy['health'] -= pet['strength'] - enemy['defence']
+        await ctx.send('ваш питомец:' + str(pet))
+        await ctx.send('враг:' + str(enemy))
+        if enemy['health'] > pet['health']:
+            await ctx.send('вы проиграли')
+            end = 0
+            loser += 1
+        else:
+            await ctx.send('вы выйграли')
+            end = 0
+            winner += 1
+bot.run('MTEzNTE1OTM4MTM4Njg1NDQ2MQ.Gnzf05.gVOQ4B6Ap7EpogDAV994ZtIVLLKenstmtKqvD8')
